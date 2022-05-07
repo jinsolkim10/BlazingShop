@@ -1,0 +1,33 @@
+﻿@page "/"
+@page "/{categoryurl}"
+@inject ICategoryService CategoryService;
+
+@if (category != null)
+{
+    <h1>@category.Name 품목에 오신 것을 환영합니다.</h1>
+    <ProductList CategoryId="@category.Id"></ProductList>
+}
+else
+{
+    <h1>블레이저 샵에 오신 걸 환영합니다!</h1>
+    <ProductList></ProductList>
+}
+
+@code {
+    [Parameter]
+    public string CategoryUrl { get; set; }
+
+    private Category category = null;
+
+    protected override void OnParametersSet()
+    {
+        if (CategoryUrl != null)
+        {
+            category = CategoryService.Categories.FirstOrDefault(c => c.Url.ToLower().Equals(CategoryUrl.ToLower()));
+        }
+        else
+        {
+            category = null;
+        }
+    }
+}

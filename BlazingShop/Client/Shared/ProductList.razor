@@ -1,0 +1,70 @@
+﻿@inject IProductService ProductService
+
+<ul class="list-unstyled">
+    @foreach (var item in CategoryId == null ? ProductService.Products : ProductService.Products.Where(p => p.CategoryId == CategoryId))
+    {
+        <li class="media my-3">
+                <div class="no-gutters row mt-5">
+                    <div class="media-img-wrapper mr-2 mb-4 col-4">
+                        <a style="text-decoration:none" href="/product/@item.Id">
+                            <img class="media-img" src="@item.Image" alt="@item.Title" />
+                        </a>
+                    </div>
+
+                    <div class="col-8">
+                        <div class="media-body">
+                            <a style="text-decoration:none" href="/product/@item.Id">
+                                <h4 class="mb-0">@item.Title</h4>
+                            </a>
+                            <p>@item.Description</p>
+                            @if (item.OriginalPrice > item.Price)
+                            {
+                                <h6 class="text-muted original-price">$@item.OriginalPrice</h6>
+                            }
+                            <h5 class="price">
+                                $@item.Price
+                            </h5>
+                        </div>
+                    </div>
+
+            </div>
+        </li>
+
+    }
+</ul>
+
+@code {
+    //찐 하드 코딩
+    //List<Product> products = new List<Product>
+    //{
+    //    new Product
+    //    {
+    //        Id=1,
+    //        CategoryId=1,
+    //        Title = "The Hitchiker's Guide to the Galaxy",
+    //        Description = "The Hitchhiker's Guide to the Galaxy (sometimes referred to as HG2G, HHGTTG, H2G2 or tHGttG) is a comdy science fiction....",
+    //        Image="https://upload.wikimedia.org/wikipedia/en/b/bd/H2G2_UK_front_cover.jpg",
+    //        Price = 9.99m,
+    //        OriginalPrice = 19.99m
+    //    },
+    //    new Product
+    //    {
+    //        Id=2,
+    //        CategoryId=3,
+    //        Title = "Half-Life 2",
+    //        Description = "2004 first-person shooter game developed and published by Valve. Like the original Half-Life.....................",
+    //        Image="https://upload.wikimedia.org/wikipedia/en/2/25/Half-Life_2_cover.jpg",
+    //        Price = 8.19m,
+    //        OriginalPrice = 29.99m
+    //    }
+    //};
+    [Parameter]
+    public int? CategoryId{ get; set; }
+
+    //서비스를 이용(현재 서비스 내에 하드코딩 되어있음)
+    protected override void OnInitialized()
+    {
+        ProductService.LoadProducts();
+    }
+
+}
