@@ -1,7 +1,8 @@
 ﻿@inject IProductService ProductService
+@implements IDisposable
 
 <ul class="list-unstyled">
-    @foreach (var item in CategoryId == null ? ProductService.Products : ProductService.Products.Where(p => p.CategoryId == CategoryId))
+    @foreach (var item in ProductService.Products)
     {
         <li class="media my-3">
                 <div class="no-gutters row mt-5">
@@ -58,13 +59,19 @@
     //        OriginalPrice = 29.99m
     //    }
     //};
-    [Parameter]
-    public int? CategoryId{ get; set; }
+    //[Parameter]
+    //public int? CategoryId { get; set; } = null;
 
     //서비스를 이용(현재 서비스 내에 하드코딩 되어있음)
     protected override void OnInitialized()
     {
-        ProductService.LoadProducts();
+        //await ProductService.LoadProducts();
+        ProductService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        ProductService.OnChange -= StateHasChanged;
     }
 
 }

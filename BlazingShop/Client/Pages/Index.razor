@@ -1,11 +1,13 @@
 ﻿@page "/"
 @page "/{categoryurl}"
-@inject ICategoryService CategoryService;
+@inject ICategoryService CategoryService
+@inject IProductService ProductService
 
 @if (category != null)
 {
     <h1>@category.Name 품목에 오신 것을 환영합니다.</h1>
-    <ProductList CategoryId="@category.Id"></ProductList>
+    @*<ProductList CategoryId="@category.Id"></ProductList>*@
+     <ProductList></ProductList>
 }
 else
 {
@@ -19,8 +21,10 @@ else
 
     private Category category = null;
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
+        await ProductService.LoadProducts(CategoryUrl);
+
         if (CategoryUrl != null)
         {
             category = CategoryService.Categories.FirstOrDefault(c => c.Url.ToLower().Equals(CategoryUrl.ToLower()));
