@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazingShop.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20220511094916_UseModelBuilder")]
-    partial class UseModelBuilder
+    [Migration("20220513164121_addEditions")]
+    partial class addEditions
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -79,6 +79,23 @@ namespace BlazingShop.Server.Migrations
                         });
                 });
 
+            modelBuilder.Entity("BlazingShop.Shared.Edition", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Editions");
+                });
+
             modelBuilder.Entity("BlazingShop.Shared.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -90,10 +107,10 @@ namespace BlazingShop.Server.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DateCreated")
+                    b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateUpdated")
+                    b.Property<DateTime?>("DateUpdated")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
@@ -135,8 +152,7 @@ namespace BlazingShop.Server.Migrations
                         {
                             Id = 1,
                             CategoryId = 1,
-                            DateCreated = new DateTime(2022, 5, 11, 18, 49, 16, 11, DateTimeKind.Local).AddTicks(9160),
-                            DateUpdated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateCreated = new DateTime(2022, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "독일 지방의 설화로, 이를 그림 형제가 채집해 동화로 각색해서 1812년의 동화집에 수록했다.",
                             Href = "none",
                             Image = "https://upload.wikimedia.org/wikipedia/commons/8/8c/Rapunzel-Paul-Hey.jpg",
@@ -150,8 +166,7 @@ namespace BlazingShop.Server.Migrations
                         {
                             Id = 11,
                             CategoryId = 1,
-                            DateCreated = new DateTime(2022, 5, 11, 18, 49, 16, 11, DateTimeKind.Local).AddTicks(9176),
-                            DateUpdated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateCreated = new DateTime(2022, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "라푼젤 1탄의 후속작으로 1탄에 이어 엄청난 호평을 받았다.",
                             Href = "none",
                             Image = "https://upload.wikimedia.org/wikipedia/commons/8/8c/Rapunzel-Paul-Hey.jpg",
@@ -165,8 +180,7 @@ namespace BlazingShop.Server.Migrations
                         {
                             Id = 2,
                             CategoryId = 2,
-                            DateCreated = new DateTime(2022, 5, 11, 18, 49, 16, 11, DateTimeKind.Local).AddTicks(9177),
-                            DateUpdated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateCreated = new DateTime(2022, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "iPhone 이래 가장 획기적인 iPhone",
                             Href = "none",
                             Image = "https://upload.wikimedia.org/wikipedia/commons/f/fa/IPhone_5.png",
@@ -180,8 +194,7 @@ namespace BlazingShop.Server.Migrations
                         {
                             Id = 3,
                             CategoryId = 3,
-                            DateCreated = new DateTime(2022, 5, 11, 18, 49, 16, 11, DateTimeKind.Local).AddTicks(9179),
-                            DateUpdated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateCreated = new DateTime(2022, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "닌텐도의 대표 비디오 게임인 마리오 시리즈의 핵심이 되는 본가 시리즈.",
                             Href = "none",
                             Image = "https://upload.wikimedia.org/wikipedia/commons/6/67/Dibujo_de_Mario.jpg",
@@ -195,8 +208,7 @@ namespace BlazingShop.Server.Migrations
                         {
                             Id = 4,
                             CategoryId = 4,
-                            DateCreated = new DateTime(2022, 5, 11, 18, 49, 16, 11, DateTimeKind.Local).AddTicks(9180),
-                            DateUpdated = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateCreated = new DateTime(2022, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "2019년 암스테르담에서 열린 콘서트",
                             Href = "https://www.youtube.com/watch?v=nJiVgPncupo",
                             Image = "https://upload.wikimedia.org/wikipedia/commons/1/1d/20190518_Blackpink_Amsterdam_concert_18.jpg",
@@ -208,10 +220,25 @@ namespace BlazingShop.Server.Migrations
                         });
                 });
 
+            modelBuilder.Entity("EditionProduct", b =>
+                {
+                    b.Property<int>("EditionsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("EditionsId", "ProductsId");
+
+                    b.HasIndex("ProductsId");
+
+                    b.ToTable("EditionProduct");
+                });
+
             modelBuilder.Entity("BlazingShop.Shared.Product", b =>
                 {
                     b.HasOne("BlazingShop.Shared.Category", "Category")
-                        .WithMany("Products")
+                        .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -219,9 +246,19 @@ namespace BlazingShop.Server.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("BlazingShop.Shared.Category", b =>
+            modelBuilder.Entity("EditionProduct", b =>
                 {
-                    b.Navigation("Products");
+                    b.HasOne("BlazingShop.Shared.Edition", null)
+                        .WithMany()
+                        .HasForeignKey("EditionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BlazingShop.Shared.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

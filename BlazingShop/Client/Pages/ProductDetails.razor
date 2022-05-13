@@ -9,6 +9,18 @@
 
         <h2 class="mb-0">@product.Title</h2>
         <p>@product.Description</p>
+        @if (product.Editions != null && product.Editions.Count > 0)
+        {
+            <div>
+                <select class="form-control">
+                    @foreach(var item in product.Editions)
+                    {
+                        <option>@item.Name</option>
+                    }
+                </select>
+            </div>
+
+        }
         @if (product.OriginalPrice > product.OriginalPrice)
         {
             <h6 class="text-muted original-price">@product.OriginalPrice</h6>

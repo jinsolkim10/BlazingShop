@@ -12,6 +12,7 @@ namespace BlazingShop.Server.Data
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Edition> Editions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,7 +33,8 @@ namespace BlazingShop.Server.Data
                     Image = "https://upload.wikimedia.org/wikipedia/commons/8/8c/Rapunzel-Paul-Hey.jpg",
                     Price = 9.99m,
                     OriginalPrice = 19.99m,
-                    Href = "none"
+                    Href = "none",
+                    DateCreated = new DateTime(2022, 1, 1)
                 },
                    new Product
                    {
@@ -43,7 +45,8 @@ namespace BlazingShop.Server.Data
                        Image = "https://upload.wikimedia.org/wikipedia/commons/8/8c/Rapunzel-Paul-Hey.jpg",
                        Price = 25.99m,
                        OriginalPrice = 29.99m,
-                       Href = "none"
+                       Href = "none",
+                       DateCreated = new DateTime(2022, 1, 1)
                    },
                     new Product
                     {
@@ -54,7 +57,8 @@ namespace BlazingShop.Server.Data
                         Image = "https://upload.wikimedia.org/wikipedia/commons/f/fa/IPhone_5.png",
                         Price = 68.19m,
                         OriginalPrice = 199.99m,
-                        Href = "none"
+                        Href = "none",
+                        DateCreated = new DateTime(2022, 1, 1)
                     },
                      new Product
                      {
@@ -65,7 +69,8 @@ namespace BlazingShop.Server.Data
                          Image = "https://upload.wikimedia.org/wikipedia/commons/6/67/Dibujo_de_Mario.jpg",
                          Price = 14.24m,
                          OriginalPrice = 53.91m,
-                         Href = "none"
+                         Href = "none",
+                         DateCreated = new DateTime(2022, 1, 1)
                      },
                      new Product
                      {
@@ -76,9 +81,27 @@ namespace BlazingShop.Server.Data
                          Image = "https://upload.wikimedia.org/wikipedia/commons/1/1d/20190518_Blackpink_Amsterdam_concert_18.jpg",
                          Price = 14.24m,
                          OriginalPrice = 53.91m,
-                         Href = "https://www.youtube.com/watch?v=nJiVgPncupo"
+                         Href = "https://www.youtube.com/watch?v=nJiVgPncupo",
+                         DateCreated = new DateTime(2022, 1, 1)
                      }
                 );
+
+            modelBuilder.Entity<Edition>().HasData(
+                new Edition { Id = 1, Name = "Paperback" },
+                new Edition { Id = 2, Name = "E-Book" },
+                new Edition { Id = 3, Name = "Audiobook" },
+                new Edition { Id = 4, Name = "PC" },
+                new Edition { Id = 5, Name = "PlayStation" },
+                new Edition { Id = 6, Name = "Xbox" }
+                );
+            modelBuilder.SharedTypeEntity<Dictionary<string, object>>("EditionProduct")
+                .HasData(
+                new { EditionsId = 1, ProductsId = 1 },
+                new { EditionsId = 2, ProductsId = 1 },
+                new { EditionsId = 3, ProductsId = 1 },
+                new { EditionsId = 1, ProductsId = 2 });
+          
+
         }
 
 
