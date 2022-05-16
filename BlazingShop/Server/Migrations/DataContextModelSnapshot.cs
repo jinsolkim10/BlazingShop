@@ -97,7 +97,7 @@ namespace BlazingShop.Server.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Paperback"
+                            Name = "Default"
                         },
                         new
                         {
@@ -123,6 +123,11 @@ namespace BlazingShop.Server.Migrations
                         {
                             Id = 6,
                             Name = "Xbox"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "CD"
                         });
                 });
 
@@ -161,12 +166,6 @@ namespace BlazingShop.Server.Migrations
                     b.Property<bool>("IsPublic")
                         .HasColumnType("bit");
 
-                    b.Property<decimal>("OriginalPrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -188,8 +187,6 @@ namespace BlazingShop.Server.Migrations
                             Image = "https://upload.wikimedia.org/wikipedia/commons/8/8c/Rapunzel-Paul-Hey.jpg",
                             IsDeleted = false,
                             IsPublic = false,
-                            OriginalPrice = 19.99m,
-                            Price = 9.99m,
                             Title = "라푼젤"
                         },
                         new
@@ -202,8 +199,6 @@ namespace BlazingShop.Server.Migrations
                             Image = "https://upload.wikimedia.org/wikipedia/commons/8/8c/Rapunzel-Paul-Hey.jpg",
                             IsDeleted = false,
                             IsPublic = false,
-                            OriginalPrice = 29.99m,
-                            Price = 25.99m,
                             Title = "라푼젤 2탄"
                         },
                         new
@@ -216,8 +211,6 @@ namespace BlazingShop.Server.Migrations
                             Image = "https://upload.wikimedia.org/wikipedia/commons/f/fa/IPhone_5.png",
                             IsDeleted = false,
                             IsPublic = false,
-                            OriginalPrice = 199.99m,
-                            Price = 68.19m,
                             Title = "아이폰5"
                         },
                         new
@@ -230,8 +223,6 @@ namespace BlazingShop.Server.Migrations
                             Image = "https://upload.wikimedia.org/wikipedia/commons/6/67/Dibujo_de_Mario.jpg",
                             IsDeleted = false,
                             IsPublic = false,
-                            OriginalPrice = 53.91m,
-                            Price = 14.24m,
                             Title = "슈퍼마리오"
                         },
                         new
@@ -244,46 +235,79 @@ namespace BlazingShop.Server.Migrations
                             Image = "https://upload.wikimedia.org/wikipedia/commons/1/1d/20190518_Blackpink_Amsterdam_concert_18.jpg",
                             IsDeleted = false,
                             IsPublic = false,
-                            OriginalPrice = 53.91m,
-                            Price = 14.24m,
                             Title = "블랙핑크 콘서트"
                         });
                 });
 
-            modelBuilder.Entity("EditionProduct", b =>
+            modelBuilder.Entity("BlazingShop.Shared.ProductVariant", b =>
                 {
-                    b.Property<int>("EditionsId")
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductsId")
+                    b.Property<int>("EditionId")
                         .HasColumnType("int");
 
-                    b.HasKey("EditionsId", "ProductsId");
+                    b.Property<decimal>("OriginalPrice")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.HasIndex("ProductsId");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
 
-                    b.ToTable("EditionProduct");
+                    b.HasKey("ProductId", "EditionId");
+
+                    b.HasIndex("EditionId");
+
+                    b.ToTable("ProductVariant");
 
                     b.HasData(
                         new
                         {
-                            EditionsId = 1,
-                            ProductsId = 1
+                            ProductId = 1,
+                            EditionId = 2,
+                            OriginalPrice = 19.99m,
+                            Price = 9.99m
                         },
                         new
                         {
-                            EditionsId = 2,
-                            ProductsId = 1
+                            ProductId = 2,
+                            EditionId = 2,
+                            OriginalPrice = 129.99m,
+                            Price = 5.99m
                         },
                         new
                         {
-                            EditionsId = 3,
-                            ProductsId = 1
+                            ProductId = 3,
+                            EditionId = 3,
+                            OriginalPrice = 29.99m,
+                            Price = 6.99m
                         },
                         new
                         {
-                            EditionsId = 1,
-                            ProductsId = 2
+                            ProductId = 4,
+                            EditionId = 4,
+                            OriginalPrice = 59.99m,
+                            Price = 8.99m
+                        },
+                        new
+                        {
+                            ProductId = 1,
+                            EditionId = 5,
+                            OriginalPrice = 69.99m,
+                            Price = 7.99m
+                        },
+                        new
+                        {
+                            ProductId = 2,
+                            EditionId = 6,
+                            OriginalPrice = 79.99m,
+                            Price = 19.99m
+                        },
+                        new
+                        {
+                            ProductId = 3,
+                            EditionId = 7,
+                            OriginalPrice = 89.99m,
+                            Price = 13.99m
                         });
                 });
 
@@ -298,19 +322,28 @@ namespace BlazingShop.Server.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("EditionProduct", b =>
+            modelBuilder.Entity("BlazingShop.Shared.ProductVariant", b =>
                 {
-                    b.HasOne("BlazingShop.Shared.Edition", null)
+                    b.HasOne("BlazingShop.Shared.Edition", "Edition")
                         .WithMany()
-                        .HasForeignKey("EditionsId")
+                        .HasForeignKey("EditionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BlazingShop.Shared.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductsId")
+                    b.HasOne("BlazingShop.Shared.Product", "Product")
+                        .WithMany("Variants")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Edition");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("BlazingShop.Shared.Product", b =>
+                {
+                    b.Navigation("Variants");
                 });
 #pragma warning restore 612, 618
         }
