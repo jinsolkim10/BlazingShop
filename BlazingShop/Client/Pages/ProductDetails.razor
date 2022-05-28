@@ -1,11 +1,14 @@
 ﻿@page "/product/{id:int}"
 @inject IProductService ProductService
-
+@inject ICartService CartService
+@inject ILocalStorageService LocalStorage
+@inject IToastService ToastService
 <div class="media">
     <div class="media-img-big-wrapper mr-2">
         <img class="media-img-big" src="@product.Image" alt="@product.Title" />
     </div>
     <div class="media-body">
+        <button class="btn btn-info" @onclick="@(() => ToastService.ShowInfo("I'm an INFO message"))">Info Toast</button>
 
         <h2 class="mb-0">@product.Title</h2>
         <p>@product.Description</p>
@@ -35,7 +38,7 @@
                 <a href="@product.Href">영상 시청하기</a>
             }
         }
-        <button class="btn btn-primary"><i class="oi oi-cart"></i>&nbsp;&nbsp;&nbsp;Add to Cart</button>
+        <button class="btn btn-primary" @onclick="AddToCart"><i class="oi oi-cart"></i>&nbsp;&nbsp;&nbsp;장바구니에 담기</button>
 
     </div>
 </div>
@@ -65,6 +68,20 @@
     {
         var varient = product.Variants.FirstOrDefault(v => v.EditionId == currentEditionId);
         return varient;
+    }
+
+    private async Task AddToCart()
+    {
+        await CartService.AddToCart(GetSelectedVarient());
+
+        //var cart = await LocalStorage.GetItemAsync<List<ProductVariant>>("cart");
+        //if(cart == null)
+        //{
+        //    cart = new List<ProductVariant>();
+        //}
+        //cart.Add(GetSelectedVarient());
+        //await LocalStorage.SetItemAsync("cart", cart);
+        //ToastService.ShowSuccess(product.Title, "장바구니에 담았습니다");
     }
 
 }

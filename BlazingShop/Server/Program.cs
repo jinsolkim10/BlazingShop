@@ -1,6 +1,8 @@
+using BlazingShop.Client.Services.CartService;
 using BlazingShop.Server.Data;
 using BlazingShop.Server.Services.CategoryService;
 using BlazingShop.Server.Services.ProductService;
+using Blazored.Toast;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 
