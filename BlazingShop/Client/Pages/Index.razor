@@ -2,16 +2,24 @@
 @page "/{categoryurl}"
 @inject ICategoryService CategoryService
 @inject IProductService ProductService
+@inject ISyncLocalStorageService LocalStroage
 
 @if (category != null)
 {
     <h1>@category.Name 품목에 오신 것을 환영합니다.</h1>
     @*<ProductList CategoryId="@category.Id"></ProductList>*@
-     <ProductList></ProductList>
+    <ProductList></ProductList>
 }
 else
 {
-    <h1>블레이저 샵에 오신 걸 환영합니다!</h1>
+    <AuthorizeView>
+        <NotAuthorized>
+                <h1>블레이저 샵에 오신 걸 환영합니다!</h1>
+        </NotAuthorized>
+        <Authorized>
+            <h1>어서오세요!  @LocalStroage.GetItemAsString("username")님</h1>
+        </Authorized>
+    </AuthorizeView>
     <ProductList></ProductList>
 }
 
