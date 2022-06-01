@@ -24,5 +24,7 @@ namespace BlazingShop.Shared
         public DateTime? DateCreated { get; set; } = DateTime.Now;
         public DateTime? DateUpdated { get; set; }
 
+        public int Views { get; set; }
+
     }
 }
