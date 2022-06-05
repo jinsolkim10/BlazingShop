@@ -2,6 +2,7 @@
 using BlazingShop.Shared;
 using Blazored.LocalStorage;
 using Blazored.Toast.Services;
+using System.Net.Http.Json;
 
 namespace BlazingShop.Client.Services.CartService
 {
@@ -10,22 +11,25 @@ namespace BlazingShop.Client.Services.CartService
         private readonly ILocalStorageService _localStorage;
         private readonly IToastService _toastService;
         private readonly IProductService _productService;
+        private readonly HttpClient _httpClient;
 
         public event Action OnChange;
 
         public CartService(ILocalStorageService localStorage,
             IToastService toastService,
-            IProductService productService)
+            IProductService productService,
+            HttpClient httpClient)
         {
             _localStorage = localStorage;
             _toastService = toastService;
             _productService = productService;
+            _httpClient = httpClient;
         }
 
         public async Task AddToCart(CartItem item)
         {
             var cart = await _localStorage.GetItemAsync<List<CartItem>>("cart");
-            if (cart==null)
+            if (cart == null)
             {
                 cart = new List<CartItem>();
             }
@@ -40,7 +44,7 @@ namespace BlazingShop.Client.Services.CartService
                 sameItem.Quantity += item.Quantity;
             }
 
-    
+
             await _localStorage.SetItemAsync("cart", cart);
 
             var product = await _productService.GetProduct(item.ProductId);
@@ -67,7 +71,7 @@ namespace BlazingShop.Client.Services.CartService
                 return;
             }
 
-            var cartItem = cart.Find(x=> x.ProductId == item.ProductId && x.EditionId == item.EditionId);
+            var cartItem = cart.Find(x => x.ProductId == item.ProductId && x.EditionId == item.EditionId);
             cart.Remove(cartItem);
 
             await _localStorage.SetItemAsync("cart", cart);
@@ -78,6 +82,13 @@ namespace BlazingShop.Client.Services.CartService
         {
             await _localStorage.RemoveItemAsync("cart");
             OnChange?.Invoke();
+        }
+
+        public async Task<string> CheckOut()
+        {
+            var result = await _httpClient.PostAsJsonAsync("api/payment/checkout", await GetCartItems());
+            var url = await result.Content.ReadAsStringAsync();
+            return url;
         }
     }
 }
